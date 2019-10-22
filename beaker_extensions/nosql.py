@@ -6,7 +6,7 @@ from beaker.util import verify_directory
 from beaker.exceptions import MissingCacheParameter
 
 try:
-    import cPickle as pickle
+    import pickle as pickle
 except:
     import pickle
  
@@ -54,7 +54,7 @@ class NoSqlManager(NamespaceManager):
         return pickle.loads(self.db_conn.get(self._format_key(key)))
 
     def __contains__(self, key):
-        return self.db_conn.has_key(self._format_key(key))
+        return self._format_key(key) in self.db_conn
 
     def has_key(self, key):
         return key in self
@@ -72,7 +72,7 @@ class NoSqlManager(NamespaceManager):
         self.db_conn.clear()
 
     def keys(self):
-        return self.db_conn.keys()
+        return list(self.db_conn.keys())
 
 
 class NoSqlManagerContainer(Container):

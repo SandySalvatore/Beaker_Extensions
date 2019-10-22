@@ -244,7 +244,7 @@ class PyTyrant(object, UserDict.DictMixin):
             raise KeyError(key)
 
     def __iter__(self):
-        return self.iterkeys()
+        return iter(self.keys())
 
     def iterkeys(self):
         self.t.iterinit()
@@ -255,7 +255,7 @@ class PyTyrant(object, UserDict.DictMixin):
             pass
 
     def keys(self):
-        return list(self.iterkeys())
+        return list(self.keys())
 
     def __len__(self):
         return self.t.rnum()
@@ -268,9 +268,9 @@ class PyTyrant(object, UserDict.DictMixin):
         if other is None:
             pass
         elif hasattr(other, 'iteritems'):
-            self.multi_set(other.iteritems())
+            self.multi_set(iter(other.items()))
         elif hasattr(other, 'keys'):
-            self.multi_set([(k, other[k]) for k in other.keys()])
+            self.multi_set([(k, other[k]) for k in list(other.keys())])
         else:
             self.multi_set(other)
         if kwargs:
@@ -293,8 +293,8 @@ class PyTyrant(object, UserDict.DictMixin):
                 raise KeyError("Missing a result, unusable response in 1.1.10")
             return rval
         # 1.1.11 protocol returns interleaved key, value list
-        d = dict((rval[i], rval[i + 1]) for i in xrange(0, len(rval), 2))
-        return map(d.get, keys)
+        d = dict((rval[i], rval[i + 1]) for i in range(0, len(rval), 2))
+        return list(map(d.get, keys))
 
     def multi_set(self, items, no_update_log=False):
         opts = (no_update_log and RDBMONOULOG or 0)
@@ -403,7 +403,7 @@ class Tyrant(object):
         socksend(self.sock, _tN(C.mget, klst))
         socksuccess(self.sock)
         numrecs = socklen(self.sock)
-        for i in xrange(numrecs):
+        for i in range(numrecs):
             k, v = sockstrpair(self.sock)
             yield k, v
 
@@ -436,7 +436,7 @@ class Tyrant(object):
         socksend(self.sock, _t1M(C.fwmkeys, prefix, maxkeys))
         socksuccess(self.sock)
         numkeys = socklen(self.sock)
-        for i in xrange(numkeys):
+        for i in range(numkeys):
             yield sockstr(self.sock)
 
     def fwmkeys(self, prefix, maxkeys):
@@ -524,7 +524,7 @@ class Tyrant(object):
             socksuccess(self.sock)
         finally:
             numrecs = socklen(self.sock)
-        for i in xrange(numrecs):
+        for i in range(numrecs):
             yield sockstr(self.sock)
 
     def misc(self, func, opts, args):

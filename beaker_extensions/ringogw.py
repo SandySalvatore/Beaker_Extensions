@@ -1,4 +1,4 @@
-import cjson, pycurl, cStringIO, time, re
+import cjson, pycurl, io, time, re
 
 multi_head_re = re.compile("(\d+) (.*?) ")
 
@@ -7,7 +7,7 @@ class ReplyException(Exception):
 
 class DecodeRaw:
         def __init__(self):
-                self.buf = cStringIO.StringIO()
+                self.buf = io.StringIO()
         def write(self, data):
                 self.buf.write(data)
         def output(self):
@@ -15,7 +15,7 @@ class DecodeRaw:
 
 class DecodeJson:
         def __init__(self):
-                self.buf = cStringIO.StringIO()
+                self.buf = io.StringIO()
         def write(self, data):
                 self.buf.write(data)
         def output(self):
@@ -96,15 +96,15 @@ class Ringo:
                 curl.setopt(curl.WRITEFUNCTION, dec.write)
                 try:
                         curl.perform()
-                except pycurl.error, x:
+                except pycurl.error as x:
                         if verbose:
-                                print "Pycurl.error:", x
+                                print("Pycurl.error:", x)
                         return x
 
                 code = curl.getinfo(curl.HTTP_CODE)
                 if verbose:
-                        print "Request took %.2fms" %\
-                                (curl.getinfo(curl.TOTAL_TIME) * 1000.0)
+                        print("Request took %.2fms" %\
+                                (curl.getinfo(curl.TOTAL_TIME) * 1000.0))
 
                 # Request timeout
                 if code == 408 and retries > 0:

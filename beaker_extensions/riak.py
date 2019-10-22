@@ -5,7 +5,7 @@ from beaker_extensions.nosql import Container
 from beaker_extensions.nosql import NoSqlManager
 
 try:
-    import riak
+    from . import riak
 except ImportError:
     raise InvalidCacheBackendError("Riak cache backend requires the 'riak' library")
 

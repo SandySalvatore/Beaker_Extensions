@@ -23,7 +23,7 @@ except ResourceNotFound:
 server.create(db_name)
 
 def simple_app(environ, start_response):
-    print "simple_app"
+    print("simple_app")
     extra_args = {}
     clear = False
     if environ.get('beaker.clear'):
@@ -44,7 +44,7 @@ def simple_app(environ, start_response):
     return ['The current value is: %s' % cache.get_value('value')]
 
 def cache_manager_app(environ, start_response):
-    print "cache_manager_app"
+    print("cache_manager_app")
     cm = environ['beaker.cache']
     cm.get_cache('test')['test_key'] = 'test value'
 
@@ -64,39 +64,39 @@ def test_has_key():
     cache = Cache('test', url=db_url, type=db_type, database=db_name)
     o = object()
     cache.set_value("test", o)
-    assert cache.has_key("test")
     assert "test" in cache
-    assert not cache.has_key("foo")
+    assert "test" in cache
+    assert "foo" not in cache
     assert "foo" not in cache
     cache.remove_value("test")
-    assert not cache.has_key("test")
+    assert "test" not in cache
 
 def test_has_key_multicache():
     cache = Cache('test', url=db_url, type=db_type, database=db_name)
     o = object()
     cache.set_value("test", o)
-    assert cache.has_key("test")
+    assert "test" in cache
     assert "test" in cache
     cache = Cache('test', url=db_url, type=db_type, database=db_name)
-    assert cache.has_key("test")
+    assert "test" in cache
     cache.remove_value('test')
 
 def test_clear():
     cache = Cache('test', url=db_url, type=db_type, database=db_name)
     o = object()
     cache.set_value("test", o)
-    assert cache.has_key("test")
+    assert "test" in cache
     cache.clear()
-    assert not cache.has_key("test")
+    assert "test" not in cache
 
 def test_unicode_keys():
     cache = Cache('test', url=db_url, type=db_type, database=db_name)
     o = object()
-    cache.set_value(u'hiŏ', o)
-    assert u'hiŏ' in cache
-    assert u'hŏa' not in cache
-    cache.remove_value(u'hiŏ')
-    assert u'hiŏ' not in cache
+    cache.set_value('hiŏ', o)
+    assert 'hiŏ' in cache
+    assert 'hŏa' not in cache
+    cache.remove_value('hiŏ')
+    assert 'hiŏ' not in cache
     
 def test_increment():
     app = TestApp(CacheMiddleware(simple_app))
